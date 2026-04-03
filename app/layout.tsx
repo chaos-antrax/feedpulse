@@ -33,7 +33,7 @@ export default function RootLayout({
         lora.variable
       )}
     >
-      <body className="bg-secondary p-4">
+      <body className="bg-secondary">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

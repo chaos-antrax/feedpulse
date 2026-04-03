@@ -3,7 +3,7 @@ import LoginForm from "@/components/LoginForm"
 
 const page = () => {
   return (
-    <div className="grid xl:grid-cols-10">
+    <div className="grid p-4 xl:grid-cols-10">
       <div className="min-h-xl col-span-3 h-[96.66vh]">
         <div className="flex items-center justify-center xl:hidden">
           <div className="absolute top-14 flex h-28 w-28 items-center justify-center rounded-full bg-primary p-4 text-6xl text-white dark:bg-muted-foreground">
