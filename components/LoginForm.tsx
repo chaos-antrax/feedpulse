@@ -63,8 +63,7 @@ const LoginForm = () => {
 
       <Button
         type="submit"
-        size="lg"
-        className="max-w-fit justify-start p-6 text-xl dark:bg-muted-foreground"
+        className="max-w-fit justify-start p-6 text-xl"
         disabled={submitting}
       >
         {submitting ? "Signing In..." : "Sign In"}

@@ -12,9 +12,17 @@ const page = () => {
         </div>
         <LoginForm />
       </div>
-      <div className="col-span-7 hidden items-center p-10 pl-24 text-9xl font-semibold text-primary xl:flex dark:text-muted-foreground">
-        FeedPulse <br />
-        Admin Portal
+      <div className="col-span-7 hidden flex-col justify-center space-y-14 p-10 pl-24 xl:flex">
+        <h1 className="text-8xl font-semibold text-primary xl:flex dark:text-muted-foreground">
+          FeedPulse <br />
+          Admin Portal
+        </h1>
+        <p className="text-2xl">
+          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
+          faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi
+          pretium tellus duis convallis. Tempus leo eu aenean sed diam urna
+          tempor.
+        </p>
       </div>
     </div>
   )

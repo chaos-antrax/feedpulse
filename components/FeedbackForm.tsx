@@ -52,7 +52,7 @@ export default function FeedbackForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid max-w-md gap-6 bg-white p-4 xl:mt-4"
+      className="grid max-w-md gap-6 bg-white/60 p-4 xl:mt-4 xl:min-w-md dark:bg-transparent"
     >
       <FieldGroup>
         <Field>
@@ -124,7 +124,7 @@ export default function FeedbackForm() {
         </Field>
       </FieldGroup>
 
-      <Button size="lg" type="submit" disabled={isSubmitting}>
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Submitting..." : "Submit Feedback"}
       </Button>
     </form>
