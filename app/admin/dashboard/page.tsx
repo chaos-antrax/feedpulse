@@ -352,7 +352,7 @@ const page = () => {
 
       {/* Pagination Controls */}
       {listData ? (
-        <div className="mt-6 flex items-center justify-between gap-4 border-t border-border/60 pt-5">
+        <div className="mt-6 flex items-center justify-between gap-4 border-t border-border/60 px-4 pt-5 pb-4">
           <p className="text-sm text-muted-foreground">
             Page {listData.pagination.page} of {listData.pagination.totalPages}
           </p>

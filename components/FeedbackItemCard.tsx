@@ -62,17 +62,19 @@ const FeedbackItemCard = (props: FeedbackItemCardProps) => {
           <h1 className="mt-4 mb-2 text-2xl font-medium">{props.title}</h1>
           <span>{props.ai_summary ?? "N/A"}</span>
         </div>
-        <div className="col-span-2 space-y-2 xl:space-y-6 xl:text-center">
-          <h2 className="tracking-widest dark:text-muted-foreground">
-            PRIORITY
-          </h2>
-          <span className="text-2xl">{props.ai_priority ?? "N/A"}</span>
-        </div>
-        <div className="col-span-2 space-y-2 xl:space-y-6 xl:text-center">
-          <h2 className="tracking-widest dark:text-muted-foreground">
-            DATE SUBMITTED
-          </h2>
-          <span className="text-2xl">{formatDate(props.createdAt)}</span>
+        <div className="items-between col-span-6 flex w-full grid-cols-4 justify-between lg:space-x-20 xl:col-span-4 xl:grid xl:space-x-0 xl:text-center">
+          <div className="col-span-2 space-y-2 xl:space-y-6 xl:text-center">
+            <h2 className="tracking-widest dark:text-muted-foreground">
+              PRIORITY
+            </h2>
+            <span className="text-2xl">{props.ai_priority ?? "N/A"}</span>
+          </div>
+          <div className="col-span-2 space-y-2 xl:space-y-6 xl:text-center">
+            <h2 className="tracking-widest dark:text-muted-foreground">
+              DATE SUBMITTED
+            </h2>
+            <span className="text-2xl">{formatDate(props.createdAt)}</span>
+          </div>
         </div>
         <div className="col-span-2 flex flex-col space-y-2 xl:items-center xl:space-y-6 xl:text-center">
           <h2 className="tracking-widest dark:text-muted-foreground">STATUS</h2>
@@ -87,7 +89,7 @@ const FeedbackItemCard = (props: FeedbackItemCardProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="absolute top-4 right-4 col-span-2 flex flex-col items-center gap-2">
+        <div className="absolute top-4 right-4 col-span-2 flex flex-row-reverse items-center gap-2 lg:flex-col">
           <Button
             className="border border-primary/30 bg-white dark:border-muted-foreground/30 dark:bg-transparent"
             onClick={handleDeleteClick}
@@ -110,7 +112,7 @@ const FeedbackItemCard = (props: FeedbackItemCardProps) => {
           </Button>
         </div>
       </div>
-      <div>
+      <div className="space-y-2">
         {props.ai_tags?.map((tag, index) => (
           <Badge key={index} className="mr-2" variant="outline">
             {tag}
