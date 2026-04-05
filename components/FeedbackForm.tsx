@@ -21,16 +21,32 @@ import { Textarea } from "@/components/ui/textarea"
 
 const categories = ["Bug", "Feature Request", "Improvement", "Other"]
 
-export default function FeedbackForm() {
-  const [formState, setFormState] = useState({
-    title: "",
-    description: "",
-    category: "Bug",
-    submitterName: "",
-    submitterEmail: "",
-  })
+interface FormState {
+  title: string
+  description: string
+  category: string
+  submitterName: string
+  submitterEmail: string
+}
 
-  const [errors, setErrors] = useState<any>({})
+interface FormErrors {
+  title?: string
+  description?: string
+  submitterEmail?: string
+}
+
+const initialState: FormState = {
+  title: "",
+  description: "",
+  category: "Bug",
+  submitterName: "",
+  submitterEmail: "",
+}
+
+export default function FeedbackForm() {
+  const [formState, setFormState] = useState<FormState>(initialState)
+
+  const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleChange = (field: string, value: string) => {
