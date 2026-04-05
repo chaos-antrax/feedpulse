@@ -43,6 +43,23 @@ const page = () => {
 
   const [isLoading, startLoading] = useTransition()
 
+  async function refreshStats() {
+    const [summaryResponse, totalResponse, newResponse, inReviewResponse] =
+      await Promise.all([
+        fetchFeedbackSummary(),
+        fetchFeedbackList({ page: 1 }),
+        fetchFeedbackList({ page: 1, status: "New" }),
+        fetchFeedbackList({ page: 1, status: "In Review" }),
+      ])
+
+    setSummary(summaryResponse)
+    setStats({
+      totalFeedback: totalResponse.pagination.total,
+      openItems:
+        newResponse.pagination.total + inReviewResponse.pagination.total,
+    })
+  }
+
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       setDebouncedSearch(searchInput)
@@ -112,6 +129,8 @@ const page = () => {
             }
           : current
       )
+
+      await refreshStats()
     } catch (updateError) {
       setError(
         updateError instanceof Error
@@ -140,6 +159,8 @@ const page = () => {
             }
           : current
       )
+
+      await refreshStats()
     } catch (deleteError) {
       setError(
         deleteError instanceof Error ? deleteError.message : "Delete failed."
