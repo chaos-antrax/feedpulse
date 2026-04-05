@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 
 import { FeedbackModel } from "../models/feedback.model";
+import { analyseFeedback } from "../services/gemini.services";
 import {
   CreateFeedbackInput,
   FeedbackListQuery,
+  FeedbackSentiment,
   UpdateFeedbackStatusInput,
 } from "../types";
 import {
@@ -15,6 +17,28 @@ import {
   toFeedbackResponse,
 } from "../utils/feedback";
 import { AppError } from "../middleware/errorHandler.middleware";
+import { logger } from "../utils/logger";
+
+async function runAsyncFeedbackAnalysis(
+  feedbackId: string,
+  title: string,
+  description: string,
+) {
+  try {
+    const analysis = await analyseFeedback(title, description);
+
+    await FeedbackModel.findByIdAndUpdate(feedbackId, {
+      ai_category: analysis.category,
+      ai_sentiment: analysis.sentiment,
+      ai_priority: analysis.priority_score,
+      ai_summary: analysis.summary,
+      ai_tags: analysis.tags,
+      ai_processed: true,
+    });
+  } catch (error: unknown) {
+    logger.error(`Gemini analysis failed for feedback ${feedbackId}.`, error);
+  }
+}
 
 export async function createFeedback(
   req: Request<unknown, unknown, CreateFeedbackInput>,
@@ -28,6 +52,12 @@ export async function createFeedback(
     ai_tags: [],
     ai_processed: false,
   });
+
+  void runAsyncFeedbackAnalysis(
+    feedback.id,
+    feedback.title,
+    feedback.description,
+  );
 
   return res.status(201).json({
     success: true,
