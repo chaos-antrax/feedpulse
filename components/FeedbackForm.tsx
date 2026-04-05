@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { submitFeedback } from "@/lib/api"
 
 const categories = ["Bug", "Feature Request", "Improvement", "Other"]
 
@@ -43,31 +44,86 @@ const initialState: FormState = {
   submitterEmail: "",
 }
 
+type SubmitState = "idle" | "submitting" | "success" | "error"
+
 export default function FeedbackForm() {
   const [formState, setFormState] = useState<FormState>(initialState)
-
   const [errors, setErrors] = useState<FormErrors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitState, setSubmitState] = useState<SubmitState>("idle")
+  const [message, setMessage] = useState("")
 
   const handleChange = (field: string, value: string) => {
     setFormState((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+  function validateForm(values: FormState) {
+    const nextErrors: FormErrors = {}
 
-    // TODO: replace with real validation + API
-    console.log("Form submitted:", formState)
+    if (!values.title.trim()) {
+      nextErrors.title = "A short title helps the team understand the issue."
+    }
 
-    setTimeout(() => {
-      setIsSubmitting(false)
-    }, 1000)
+    if (!values.description.trim()) {
+      nextErrors.description =
+        "Please describe the feedback in a little more detail."
+    } else if (values.description.trim().length < 20) {
+      nextErrors.description = "Description must be at least 20 characters."
+    }
+
+    if (
+      values.submitterEmail.trim() &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.submitterEmail.trim())
+    ) {
+      nextErrors.submitterEmail = "Enter a valid email address."
+    }
+
+    return nextErrors
+  }
+
+  async function handleSubmit() {
+    const nextErrors = validateForm(formState)
+    setErrors(nextErrors)
+
+    if (Object.keys(nextErrors).length > 0) {
+      setSubmitState("error")
+      setMessage("Please check the highlighted fields and try again.")
+      return
+    }
+
+    try {
+      setSubmitState("submitting")
+      setMessage("")
+
+      await submitFeedback({
+        title: formState.title,
+        description: formState.description,
+        category: formState.category,
+        submitterName: formState.submitterName || undefined,
+        submitterEmail: formState.submitterEmail || undefined,
+      })
+
+      setFormState(initialState)
+      setErrors({})
+      setSubmitState("success")
+      setMessage("Thanks. Your feedback has been sent to the FeedPulse team.")
+
+      setTimeout(() => {
+        setSubmitState("idle")
+        setMessage("")
+      }, 10000)
+    } catch (error) {
+      setSubmitState("error")
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while submitting."
+      )
+    }
   }
 
   return (
     <form
-      onSubmit={handleSubmit}
+      action={handleSubmit}
       className="grid max-w-md gap-6 bg-white/60 p-4 xl:mt-4 xl:min-w-md dark:bg-transparent"
     >
       <FieldGroup>
@@ -140,8 +196,11 @@ export default function FeedbackForm() {
         </Field>
       </FieldGroup>
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Submitting..." : "Submit Feedback"}
+      <Button type="submit" disabled={submitState === "submitting"}>
+        {submitState === "submitting" && "Submitting..."}
+        {submitState === "success" && "Submitted ✓"}
+        {submitState === "error" && "Retry Submission"}
+        {submitState === "idle" && "Submit Feedback"}
       </Button>
     </form>
   )
