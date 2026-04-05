@@ -12,7 +12,7 @@ export function requireAuth(
 ) {
   const header = req.headers.authorization;
 
-  if (!header?.startsWith("Bearer")) {
+  if (!header?.startsWith("Bearer ")) {
     return next(
       new AppError(401, "UNAUTHORIZED", "Authorization token is required."),
     );
