@@ -25,7 +25,7 @@
 
 ### Stack
 
-Next.js + Typescript Frontend
-Express + Typescript Server
-MongoDB Database
-Gemini AI @ [https://aistudio.google.com/]
+- Next.js + Typescript Frontend
+- Express + Typescript Server
+- MongoDB Database
+- Gemini AI @ [https://aistudio.google.com/]
