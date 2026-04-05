@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Kbd } from "@/components/ui/kbd"
 
 import Header from "@/components/Header"

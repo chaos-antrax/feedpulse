@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react"
 import { Badge } from "./ui/badge"
 import { Trash } from "lucide-react"
 import {

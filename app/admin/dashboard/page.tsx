@@ -1,7 +1,4 @@
 "use client"
-
-import Header from "@/components/Header"
-import { title } from "node:process"
 import React, { useEffect, useState, useTransition } from "react"
 import StatCard from "@/components/StatCard"
 import { Button } from "@/components/ui/button"
@@ -13,8 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { stat } from "node:fs"
-
 import FeedbackItemCard from "@/components/FeedbackItemCard"
 
 import {
@@ -24,134 +19,9 @@ import {
   updateFeedbackStatus,
 } from "@/lib/api"
 
-import {
-  FeedbackItem,
-  FeedbackListResponse,
-  FeedbackSummaryResponse,
-} from "@/lib/types"
+import { FeedbackListResponse, FeedbackSummaryResponse } from "@/lib/types"
 import { useRouter } from "next/navigation"
 import { clearAuthToken } from "@/lib/auth"
-
-// const feedbackItems = [
-//   {
-//     id: 1,
-//     title: "Add dark mode support",
-//     category: "Feature Request",
-//     ai_sentiment: "Positive",
-//     ai_summary:
-//       "Users are requesting a dark mode option for better usability at night.",
-//     ai_priority: 4.5,
-//     date: "2024-06-01",
-//     status: "New",
-//     ai_tags: ["UI", "UX", "Dark Mode"],
-//   },
-//   {
-//     id: 2,
-//     title: "Improve page load speed",
-//     category: "Improvement",
-//     ai_sentiment: "Negative",
-//     ai_summary:
-//       "Users report slow loading times, especially on mobile devices.",
-//     ai_priority: 4.8,
-//     date: "2024-06-02",
-//     status: "In Progress",
-//     ai_tags: ["Performance", "Mobile"],
-//   },
-//   {
-//     id: 3,
-//     title: "Fix login error on Safari",
-//     category: "Bug",
-//     ai_sentiment: "Negative",
-//     ai_summary:
-//       "Safari users are unable to log in due to a session handling issue.",
-//     ai_priority: 5.0,
-//     date: "2024-06-03",
-//     status: "New",
-//     ai_tags: ["Bug", "Safari", "Auth"],
-//   },
-//   {
-//     id: 4,
-//     title: "Add export to CSV feature",
-//     category: "Feature Request",
-//     ai_sentiment: "Positive",
-//     ai_summary:
-//       "Users want to export their data into CSV for reporting purposes.",
-//     ai_priority: 4.2,
-//     date: "2024-06-04",
-//     status: "Planned",
-//     ai_tags: ["Data", "Export"],
-//   },
-//   {
-//     id: 5,
-//     title: "Improve dashboard layout",
-//     category: "Improvement",
-//     ai_sentiment: "Neutral",
-//     ai_summary: "Users suggest reorganizing widgets for better readability.",
-//     ai_priority: 3.9,
-//     date: "2024-06-05",
-//     status: "In Progress",
-//     ai_tags: ["UI", "Dashboard"],
-//   },
-//   {
-//     id: 6,
-//     title: "Notifications not working",
-//     category: "Bug",
-//     ai_sentiment: "Negative",
-//     ai_summary: "Push notifications are not being delivered to some users.",
-//     ai_priority: 4.7,
-//     date: "2024-06-06",
-//     status: "New",
-//     ai_tags: ["Notifications", "Bug"],
-//   },
-//   {
-//     id: 7,
-//     title: "Add multi-language support",
-//     category: "Feature Request",
-//     ai_sentiment: "Positive",
-//     ai_summary:
-//       "Users request support for multiple languages to improve accessibility.",
-//     ai_priority: 4.6,
-//     date: "2024-06-07",
-//     status: "Planned",
-//     ai_tags: ["i18n", "Accessibility"],
-//   },
-//   {
-//     id: 8,
-//     title: "Search function is inaccurate",
-//     category: "Bug",
-//     ai_sentiment: "Negative",
-//     ai_summary:
-//       "Search results are often irrelevant or missing expected items.",
-//     ai_priority: 4.4,
-//     date: "2024-06-08",
-//     status: "In Progress",
-//     ai_tags: ["Search", "Bug"],
-//   },
-//   {
-//     id: 9,
-//     title: "Allow profile picture upload",
-//     category: "Feature Request",
-//     ai_sentiment: "Positive",
-//     ai_summary:
-//       "Users want the ability to upload and customize their profile pictures.",
-//     ai_priority: 3.8,
-//     date: "2024-06-09",
-//     status: "New",
-//     ai_tags: ["Profile", "UX"],
-//   },
-//   {
-//     id: 10,
-//     title: "Reduce form validation errors",
-//     category: "Improvement",
-//     ai_sentiment: "Neutral",
-//     ai_summary:
-//       "Users encounter frequent validation errors when submitting forms.",
-//     ai_priority: 4.1,
-//     date: "2024-06-10",
-//     status: "In Progress",
-//     ai_tags: ["Forms", "Validation"],
-//   },
-// ]
 
 const page = () => {
   const router = useRouter()
