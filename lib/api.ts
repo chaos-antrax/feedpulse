@@ -8,6 +8,18 @@ import {
   FeedbackSummaryResponse,
 } from "@/lib/types"
 
+export class ApiRequestError extends Error {
+  status: number
+  code?: string
+
+  constructor(message: string, status: number, code?: string) {
+    super(message)
+    this.name = "ApiRequestError"
+    this.status = status
+    this.code = code
+  }
+}
+
 function getApiBaseUrl() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
@@ -71,7 +83,11 @@ async function apiRequest<T>(
   }
 
   if (!response.ok || !payload.success) {
-    throw new Error(payload.message || "Request failed.")
+    throw new ApiRequestError(
+      payload.message || "Request failed.",
+      response.status,
+      payload.success ? undefined : payload.error
+    )
   }
 
   return payload

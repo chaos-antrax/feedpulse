@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { submitFeedback } from "@/lib/api"
+import { ApiRequestError, submitFeedback } from "@/lib/api"
 
 const categories = ["Bug", "Feature Request", "Improvement", "Other"]
 
@@ -113,6 +113,14 @@ export default function FeedbackForm() {
       }, 10000)
     } catch (error) {
       setSubmitState("error")
+
+      if (error instanceof ApiRequestError && error.status === 429) {
+        setMessage(
+          "You have reached the limit of 5 feedback submissions from this IP within the last hour. Please try again later."
+        )
+        return
+      }
+
       setMessage(
         error instanceof Error
           ? error.message
@@ -202,6 +210,17 @@ export default function FeedbackForm() {
         {submitState === "error" && "Retry Submission"}
         {submitState === "idle" && "Submit Feedback"}
       </Button>
+      {message ? (
+        <div
+          className={`rounded-md border px-3 py-2 text-sm ${
+            submitState === "success"
+              ? "border-green-300 bg-green-50 text-green-900 dark:border-green-800 dark:bg-green-950/40 dark:text-green-200"
+              : "border-destructive/30 bg-destructive/10 text-destructive"
+          }`}
+        >
+          {message}
+        </div>
+      ) : null}
     </form>
   )
 }
