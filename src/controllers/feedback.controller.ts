@@ -2,11 +2,10 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 
 import { FeedbackModel } from "../models/feedback.model";
-import { analyseFeedback } from "../services/gemini.services";
+import { runFeedbackAnalysis } from "../services/feedbackAnalysis.service";
 import {
   CreateFeedbackInput,
   FeedbackListQuery,
-  FeedbackSentiment,
   UpdateFeedbackStatusInput,
 } from "../types";
 import {
@@ -25,16 +24,7 @@ async function runAsyncFeedbackAnalysis(
   description: string,
 ) {
   try {
-    const analysis = await analyseFeedback(title, description);
-
-    await FeedbackModel.findByIdAndUpdate(feedbackId, {
-      ai_category: analysis.category,
-      ai_sentiment: analysis.sentiment,
-      ai_priority: analysis.priority_score,
-      ai_summary: analysis.summary,
-      ai_tags: analysis.tags,
-      ai_processed: true,
-    });
+    await runFeedbackAnalysis(feedbackId, title, description);
   } catch (error: unknown) {
     logger.error(`Gemini analysis failed for feedback ${feedbackId}.`, error);
   }
@@ -119,6 +109,28 @@ export async function updateFeedbackStatus(
     success: true,
     data: toFeedbackResponse(feedback),
     message: "Feedback status updated successfully.",
+  });
+}
+
+export async function reanalyzeFeedback(
+  req: Request<{ id: string }>,
+  res: Response,
+) {
+  const feedback = await findFeedbackOrThrow(req.params.id);
+  const updatedFeedback = await runFeedbackAnalysis(
+    feedback.id,
+    feedback.title,
+    feedback.description,
+  );
+
+  if (!updatedFeedback) {
+    throw new AppError(404, "NOT_FOUND", "Feedback item was not found.");
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: toFeedbackResponse(updatedFeedback),
+    message: "AI analysis triggered successfully.",
   });
 }
 

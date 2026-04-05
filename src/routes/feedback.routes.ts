@@ -6,6 +6,7 @@ import {
   getFeedbackById,
   getFeedbackSummary,
   listFeedback,
+  reanalyzeFeedback,
   updateFeedbackStatus,
 } from "../controllers/feedback.controller";
 import { requireAuth } from "../middleware/auth.middleware";
@@ -22,5 +23,6 @@ feedbackRouter.post(
 feedbackRouter.get("/summary", requireAuth, asyncHandler(getFeedbackSummary));
 feedbackRouter.get("/", requireAuth, asyncHandler(listFeedback));
 feedbackRouter.get("/:id", requireAuth, asyncHandler(getFeedbackById));
+feedbackRouter.post("/:id/reanalyze", requireAuth, asyncHandler(reanalyzeFeedback));
 feedbackRouter.patch("/:id", requireAuth, asyncHandler(updateFeedbackStatus));
 feedbackRouter.delete("/:id", requireAuth, asyncHandler(deleteFeedback));
