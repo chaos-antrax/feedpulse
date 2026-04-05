@@ -21,7 +21,7 @@
 
 <img width="1917" height="941" alt="image" src="https://github.com/user-attachments/assets/a511cf52-d188-461d-92c2-7f5d7323ba07" />
 <img width="1917" height="941" alt="image" src="https://github.com/user-attachments/assets/946333dc-e381-4ba8-b5b9-64a720510b26" />
-<img width="1918" height="943" alt="image" src="https://github.com/user-attachments/assets/bc5cdd47-fbea-423a-ae8d-72cd465a30c0" />
+<img width="1919" height="941" alt="image" src="https://github.com/user-attachments/assets/5acaf16e-180f-4c76-bbed-7c747976b2ed" />
 
 ### Stack
 
