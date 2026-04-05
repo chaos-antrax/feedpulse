@@ -1,4 +1,3 @@
-import e from "cors";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -11,6 +10,26 @@ function readRequiredEnv(name: string) {
   }
 
   return value;
+}
+
+function readBooleanEnv(name: string, fallback: boolean) {
+  const value = process.env[name]?.trim();
+
+  if (!value) {
+    return fallback;
+  }
+
+  if (value === "true") {
+    return true;
+  }
+
+  if (value === "false") {
+    return false;
+  }
+
+  throw new Error(
+    `Invalid ${name} value: ${value}. Expected "true" or "false".`,
+  );
 }
 
 const portValue = process.env.PORT?.trim() ?? "8000";
@@ -36,4 +55,5 @@ export const env = {
   JWT_SECRET: jwtSecret,
   ADMIN_EMAIL: readRequiredEnv("ADMIN_EMAIL"),
   ADMIN_PASSWORD: readRequiredEnv("ADMIN_PASSWORD"),
+  TRUST_PROXY: readBooleanEnv("TRUST_PROXY", false),
 } as const;

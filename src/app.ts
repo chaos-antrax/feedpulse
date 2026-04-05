@@ -1,12 +1,15 @@
 import cors from "cors";
 import express from "express";
 
+import { env } from "./config/env";
 import { authRouter } from "./routes/auth.routes";
 import { feedbackRouter } from "./routes/feedback.routes";
 import { errorHandler } from "./middleware/errorHandler.middleware";
 
 export function createApp() {
   const app = express();
+
+  app.set("trust proxy", env.TRUST_PROXY);
 
   app.use(
     cors({

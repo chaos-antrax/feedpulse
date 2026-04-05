@@ -9,11 +9,16 @@ import {
   updateFeedbackStatus,
 } from "../controllers/feedback.controller";
 import { requireAuth } from "../middleware/auth.middleware";
+import { limitFeedbackSubmissions } from "../middleware/rateLimit.middleware";
 import { asyncHandler } from "../utils/asyncHandler";
 
 export const feedbackRouter = Router();
 
-feedbackRouter.post("/", asyncHandler(createFeedback));
+feedbackRouter.post(
+  "/",
+  asyncHandler(limitFeedbackSubmissions),
+  asyncHandler(createFeedback),
+);
 feedbackRouter.get("/summary", requireAuth, asyncHandler(getFeedbackSummary));
 feedbackRouter.get("/", requireAuth, asyncHandler(listFeedback));
 feedbackRouter.get("/:id", requireAuth, asyncHandler(getFeedbackById));
