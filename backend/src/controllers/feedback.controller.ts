@@ -117,11 +117,25 @@ export async function reanalyzeFeedback(
   res: Response,
 ) {
   const feedback = await findFeedbackOrThrow(req.params.id);
-  const updatedFeedback = await runFeedbackAnalysis(
-    feedback.id,
-    feedback.title,
-    feedback.description,
-  );
+  let updatedFeedback;
+
+  try {
+    updatedFeedback = await runFeedbackAnalysis(
+      feedback.id,
+      feedback.title,
+      feedback.description,
+    );
+  } catch (error: unknown) {
+    if (isGeminiThrottledError(error)) {
+      throw new AppError(
+        429,
+        "AI_THROTTLED",
+        "API usage has been throttled, please try using AI features later",
+      );
+    }
+
+    throw error;
+  }
 
   if (!updatedFeedback) {
     throw new AppError(404, "NOT_FOUND", "Feedback item was not found.");
@@ -174,4 +188,31 @@ async function findFeedbackOrThrow(id: string) {
   }
 
   return feedback;
+}
+
+function isGeminiThrottledError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const candidate = error as {
+    status?: unknown;
+    statusText?: unknown;
+    message?: unknown;
+  };
+
+  if (candidate.status === 429) {
+    return true;
+  }
+
+  const statusText = String(candidate.statusText ?? "").toLowerCase();
+  const message = String(candidate.message ?? "").toLowerCase();
+
+  return (
+    statusText.includes("resource exhausted") ||
+    statusText.includes("too many requests") ||
+    message.includes("resource exhausted") ||
+    message.includes("too many requests") ||
+    message.includes("quota")
+  );
 }
