@@ -1,0 +1,9 @@
+process.env.PORT = "8000";
+process.env.MONGO_URI = "mongodb://127.0.0.1:27017/feedpulse-test";
+process.env.GEMINI_API_KEY = "test-gemini-api-key";
+process.env.GEMINI_MODEL = "gemini-test-model";
+process.env.JWT_SECRET = "12345678901234567890123456789012";
+process.env.ADMIN_EMAIL = "admin@example.com";
+process.env.ADMIN_PASSWORD = "super-secret-password";
+process.env.FEEDBACK_RATE_LIMIT_ENABLED = "false";
+process.env.TRUST_PROXY = "false";
