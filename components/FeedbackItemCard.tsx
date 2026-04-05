@@ -1,7 +1,7 @@
 "use client"
 
 import { Badge } from "./ui/badge"
-import { Trash } from "lucide-react"
+import { LucideStars, Stars, Trash } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "./ui/select"
 import { Button } from "./ui/button"
+import Image from "next/image"
 
 interface FeedbackItemCardProps {
   id?: string
@@ -23,6 +24,9 @@ interface FeedbackItemCardProps {
   ai_tags?: string[] | null
   onDelete?: () => void
   onStatusChange?: (newStatus: string) => void
+  onReanalyze?: () => void
+  isDeleting?: boolean
+  isReanalyzing?: boolean
 }
 
 function formatDate(value: string) {
@@ -42,6 +46,11 @@ const FeedbackItemCard = (props: FeedbackItemCardProps) => {
       props.onDelete?.()
     }
   }
+
+  const handleReanalyzeClick = () => {
+    props.onReanalyze?.()
+  }
+
   return (
     <div className="relative space-y-4 bg-white p-4 dark:bg-muted-foreground/10">
       <div className="grid items-center justify-center space-y-4 xl:grid-cols-12">
@@ -78,9 +87,26 @@ const FeedbackItemCard = (props: FeedbackItemCardProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="absolute top-4 right-4 col-span-2 flex items-center justify-center">
-          <Button onClick={handleDeleteClick}>
-            <Trash className="cursor-pointer" />
+        <div className="absolute top-4 right-4 col-span-2 flex flex-col items-center gap-2">
+          <Button
+            className="border border-primary/30 bg-white dark:border-muted-foreground/30 dark:bg-transparent"
+            onClick={handleDeleteClick}
+            disabled={props.isDeleting || props.isReanalyzing}
+          >
+            <Trash className="cursor-pointer text-primary dark:text-muted-foreground" />
+          </Button>
+          <Button
+            className="border border-primary/30 bg-white dark:border-muted-foreground/30 dark:bg-transparent"
+            onClick={handleReanalyzeClick}
+            disabled={props.isDeleting || props.isReanalyzing}
+          >
+            <Image
+              src="/images/gemini.svg"
+              width="14"
+              height="14"
+              alt="G"
+              className="h-4 w-4"
+            />
           </Button>
         </div>
       </div>

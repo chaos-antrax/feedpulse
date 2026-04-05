@@ -147,6 +147,18 @@ export async function updateFeedbackStatus(id: string, status: string) {
   return payload.data
 }
 
+export async function reanalyzeFeedback(id: string) {
+  const payload = await apiRequest<FeedbackItem>(
+    `/api/feedback/${id}/reanalyze`,
+    {
+      method: "POST",
+      auth: true,
+    }
+  )
+
+  return payload.data
+}
+
 export async function deleteFeedback(id: string) {
   await apiRequest<{ id: string }>(`/api/feedback/${id}`, {
     method: "DELETE",

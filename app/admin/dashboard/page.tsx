@@ -16,6 +16,7 @@ import {
   deleteFeedback,
   fetchFeedbackList,
   fetchFeedbackSummary,
+  reanalyzeFeedback,
   updateFeedbackStatus,
 } from "@/lib/api"
 
@@ -40,6 +41,7 @@ const page = () => {
   const [error, setError] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState("")
   const [deletingId, setDeletingId] = useState("")
+  const [reanalyzingId, setReanalyzingId] = useState("")
 
   const [isLoading, startLoading] = useTransition()
 
@@ -167,6 +169,34 @@ const page = () => {
       )
     } finally {
       setDeletingId("")
+    }
+  }
+
+  async function handleReanalyze(id: string) {
+    try {
+      setReanalyzingId(id)
+      const updated = await reanalyzeFeedback(id)
+
+      setListData((current) =>
+        current
+          ? {
+              ...current,
+              items: current.items.map((item) =>
+                item.id === id ? updated : item
+              ),
+            }
+          : current
+      )
+
+      await refreshStats()
+    } catch (reanalyzeError) {
+      setError(
+        reanalyzeError instanceof Error
+          ? reanalyzeError.message
+          : "AI re-analysis failed."
+      )
+    } finally {
+      setReanalyzingId("")
     }
   }
 
@@ -309,9 +339,12 @@ const page = () => {
               key={item.id}
               {...item}
               onDelete={() => handleDelete(item.id)}
+              onReanalyze={() => handleReanalyze(item.id)}
               onStatusChange={(newStatus) =>
                 handleStatusChange(item.id, newStatus)
               }
+              isDeleting={deletingId === item.id}
+              isReanalyzing={reanalyzingId === item.id}
             />
           ))}
         </div>
