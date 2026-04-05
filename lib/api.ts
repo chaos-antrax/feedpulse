@@ -79,7 +79,7 @@ async function apiRequest<T>(
 
   if (response.status === 401 && typeof window !== "undefined") {
     clearAuthToken()
-    window.location.href = "/login"
+    window.location.href = "/admin"
   }
 
   if (!response.ok || !payload.success) {
